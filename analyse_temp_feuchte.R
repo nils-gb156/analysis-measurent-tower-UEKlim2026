@@ -362,8 +362,13 @@ plot_ereignis <- function(daten, start, ende, titel, erklaerung, datei) {
     geom_line(colour = col_sw, linewidth = 1.1) +
     x_scale + labs(y = "kurzw.\nStrahlung\n(W/m²)", x = NULL)
   
+  # feste, bei 0 verankerte Achse: ein regenfreier Tag zeigt eine saubere
+  # 0-2 mm-Achse statt einer winzigen, "kaputt" wirkenden +/-0.05-Skala
+  ymax_n <- max(2, max(d$niederschlag, na.rm = TRUE) * 1.1)
   p4 <- ggplot(d, aes(zeit, niederschlag)) +
     geom_col(fill = col_rh, width = 600) +
+    scale_y_continuous(limits = c(0, ymax_n),
+                       expand = expansion(mult = c(0, 0.05))) +
     x_scale + labs(y = "Nieder-\nschlag\n(mm)", x = NULL)
   
   kombi <- (p1 / p2 / p3 / p4) +
